@@ -1,25 +1,33 @@
 import React from 'react';
 
+import JournalEntry from './JournalEntry';
+
 export default class Home extends React.Component {
   static PropTypes = {
 
   }
 
-  handleClick(e) {
-    e.preventDefault();
-    this.props.logOutUser();
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.journal.errorMessage === 'Internal Server Error') {
+      location.reload();
+    }
   }
-
 
   render() {
     const { user, isFetching } = this.props.auth;
     return (
       <div>
-        <h1>WELCOME HOME!</h1>
-        <span>{user ? `Hi, ${user.nickname}` : 'loading...'}</span>
-        <button onClick={e => this.handleClick(e)}>
-          {isFetching ? 'Logging out...' : 'Log Out'}
-        </button>
+        {this.props.journal.isFetching &&
+          <div>
+            <div className="ui active inline loader" />
+          </div>
+        }
+        {this.props.journal.isWriting &&
+          <JournalEntry {...this.props} />
+        }
+        {this.props.journal.errorMessage &&
+          <p>{this.props.journal.errorMessage}</p>
+        }
       </div>
     );
   }

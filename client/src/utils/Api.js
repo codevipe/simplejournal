@@ -1,45 +1,46 @@
 import fetch from 'isomorphic-fetch';
 
-export default class ApiCall {
-  static get(token, dataType, query, cb) {
-    let path;
-    !query ? path = `/api/${dataType}` : path = `/api/${dataType}${query}`;
+export default class Api {
+  static get(dataType, query, cb) {
+    const token = localStorage.getItem('id_token');
+    const path = `/api/${dataType}${query}`;
     return fetch(path, {
       method: 'get',
       headers: new Headers({
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token,
+        Authorization: `Bearer ${token}`,
       }),
     }).then(this.checkStatus)
       .then(this.parseJSON)
-      .then(cb);
+      .then(cb)
+      .catch(cb);
   }
 
-  static post(token, dataType, data, query, cb) {
-    let path;
-    !query ? path = `/api/${dataType}` : path = `/api/${dataType}${query}`;
+  static post(dataType, data, cb) {
+    const token = localStorage.getItem('id_token');
+    const path = `/api/${dataType}`;
     return fetch(path, {
       method: 'post',
       headers: new Headers({
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token,
+        Authorization: `Bearer ${token}`,
       }),
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data }),
     }).then(this.checkStatus)
       .then(this.parseJSON)
-      .then(cb);
+      .then(cb)
+      .catch(cb);
   }
 
   static checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
+    if (response.ok) {
       return response;
     }
     const error = new Error(`HTTP Error ${response.statusText}`);
     error.status = response.statusText;
     error.response = response;
-    console.log(error); // eslint-disable-line no-console
     throw error;
   }
 

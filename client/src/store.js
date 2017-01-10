@@ -10,16 +10,17 @@ import config from './utils/config';
 
 const auth = new AuthService(config.AUTH0_CLIENT_ID, config.AUTH0_DOMAIN);
 
-let user;
-if (localStorage.getItem('user_profile')) {
-  user = JSON.parse(localStorage.getItem('user_profile'));
-}
-
 const defaultState = {
   auth: {
     isFetching: false,
     isAuthenticated: auth.loggedIn(),
-    user,
+    user: localStorage.getItem('user_profile') ? JSON.parse(localStorage.getItem('user_profile')) : null,
+  },
+  journal: {
+    isFetching: false,
+    isWriting: false,
+    enteringGrateful: false,
+    entry: {},
   },
 };
 

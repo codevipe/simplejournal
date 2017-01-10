@@ -19,10 +19,10 @@ export default class LogIn extends React.Component {
     const errorMsg = this.props.auth.errorMessage;
     return (
       <div className="login">
-        <button className="google-login" onClick={this.props.logInUserGoogle}>
-          Log in with Google
-        </button>
         <form className="login-form" onSubmit={this.handleEmailSignin}>
+          <button className="google-login" onClick={this.props.logInUserGoogle}>
+            Log in with Google
+          </button>
           <input
             placeholder="you@domain.com"
             name="email"

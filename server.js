@@ -8,6 +8,8 @@ const http = require('http');
 const jwt = require('express-jwt');
 const MongoClient = require('mongodb').MongoClient;
 
+const journalEntries = require('./routes/api/journal-entries');
+
 dotenv.load();
 
 const app = express();
@@ -19,9 +21,10 @@ const dbPass = process.env.MLAB_DB_PASS;
 const mongoUrl = `mongodb://${dbUser}:${dbPass}@ds139438.mlab.com:39438/${dbName}`;
 
 const jwtCheck = jwt({
-  secret: process.env.AUTH0_CLIENT_SECRET,
+  secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
   audience: process.env.AUTH0_CLIENT_ID,
 });
+
 
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
@@ -38,6 +41,8 @@ app.use((err, req, res, next) => {
     res.status(401).send({ error: 'Invalid token!' });
   }
 });
+
+app.use('/api/journal-entries', journalEntries);
 
 // Express only serves static client assets in production
 if (process.env.NODE_ENV === 'production') {

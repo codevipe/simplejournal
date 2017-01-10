@@ -1,12 +1,7 @@
-let user;
-if (localStorage.getItem('user_profile')) {
-  user = JSON.parse(localStorage.getItem('user_profile'));
-}
-
 function auth(state = {
   isFetching: false,
   isAuthenticated: localStorage.getItem('id_token') ? true : false,
-  user,
+  user: localStorage.getItem('user_profile') ? JSON.parse(localStorage.getItem('user_profile')) : null,
 }, action) {
   switch (action.type) {
     case 'SIGNUP_REQUEST':
